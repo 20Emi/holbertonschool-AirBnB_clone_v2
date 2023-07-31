@@ -126,19 +126,21 @@ class HBNBCommand(cmd.Cmd):
             return
 
         new_instance = HBNBCommand.classes[class_name]()
-        # Loop each parameter (excluding the class name)
-        for param in arguments[1:]:
-            # Split the parameter into key and value
-            key, value = param.split("=")
-            # Remove double quotes from the value
-            value = value.strip('"')
-            value = value.replace('_', ' ')
-            
-            try:  # Convert the value to an integer
-                value = int(value)
-            except ValueError:
-                try: # If conversion to int fails, try to convert to a float
-                    value = float(value)
+        # Loop each argument (excluding the class name)
+        for arg in arguments[1:]:
+            # Split the argument into key and value
+            key, value = arg.split("=")
+            if value.startswith('"') and value.endswith('"'):
+                # Remove the double quotes
+                value = value.strip('"')
+                value = value.replace('_', ' ')
+                value = value.replace('"', '\"')
+            else:
+                try:
+                    if "." in value:
+                        value = float(value)
+                    else:
+                        value = int(value)
                 except ValueError:
                     # If both conversions fail, keep the value as a string
                     pass
