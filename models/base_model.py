@@ -18,10 +18,10 @@ class BaseModel:
             self.id = Column(String(60), nullable=False,
                              default=(str(uuid.uuid4())))
             self.created_at = Column(
-                DateTime, nullable=False, default=(datetime.utcnow()))
+                DateTime, nullable=False, default=(datetime.now()))
             self.updated_at = Column(
-                DateTime, nullable=False, default=(datetime.utcnow()))
-            storage.new(self)
+                DateTime, nullable=False, default=(datetime.now()))
+
         else:
             kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
                                                      '%Y-%m-%dT%H:%M:%S.%f')
@@ -39,6 +39,7 @@ class BaseModel:
         """Updates updated_at with current time when instance is changed"""
         from models import storage
         self.updated_at = datetime.now()
+        storage.new(self)
         storage.save()
 
     def to_dict(self):
