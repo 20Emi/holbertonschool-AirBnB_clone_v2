@@ -24,8 +24,20 @@ class DBStorage:
             Base.metadata.drop(self.__engine)
 
     def all(self, cls=None):
-        """comment"""
-        pass
+        """Query on the current database session
+        and get all objects stored in the database for a specific
+        class or for all classes"""
+        directory = {}
+        classes = [User, State, City, Amenity, Place, Review]
+        if cls is None:
+            for cls in classes:
+                directory[cls.__name__] = self.__session.query(cls).all()
+        else:
+            # se consulta solo para la clase especificada
+            directory[cls.__name__] = self.__session.quer(cls).all()
+        for obj in directory[cls.__name__]:
+            key = '{}.{}'.format(type(obj).__name__, obj.id)
+            directory[key] = obj
 
     def new(self, obj):
         """add the object to the current database session"""
