@@ -33,7 +33,7 @@ class DBStorage:
 
     def save(self):
         """commit all changes of the current database session"""
-        # self.__session.commit()
+        self.__session.commit()
 
     def delete(self, obj=None):
         """delete from the current database session obj if not None"""
@@ -42,13 +42,15 @@ class DBStorage:
 
     def reload(self):
         """*create all tables in the database
-        *reate the current database session"""
+        *Create the current database session"""
         Base.metadata.create_all(self.__engine)
 
         # crea una funcion de fabrica de sisiones
         my_session = sessionmaker(self.__engine, expire_on_commit=False)
 
         # crea un objeto de secion
-        Session = scoped_session(my_session)
+        self.__session = scoped_session(my_session)
 
-        # my_session.close()
+    def close(self):
+        """Close the session"""
+        self.__session.close()
