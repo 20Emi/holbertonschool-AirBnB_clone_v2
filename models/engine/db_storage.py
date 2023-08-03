@@ -4,7 +4,12 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 import os
-
+from models.state import State
+from models.city import City
+from models.user import User
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 class DBStorage:
     """"""
@@ -34,7 +39,7 @@ class DBStorage:
                 directory[cls.__name__] = self.__session.query(cls).all()
         else:
             # se consulta solo para la clase especificada
-            directory[cls.__name__] = self.__session.quer(cls).all()
+            directory[cls.__name__] = self.__session.query(cls).all()
         for obj in directory[cls.__name__]:
             key = '{}.{}'.format(type(obj).__name__, obj.id)
             directory[key] = obj
@@ -58,7 +63,7 @@ class DBStorage:
         Base.metadata.create_all(self.__engine)
 
         # crea una funcion de fabrica de sisiones
-        my_session = sessionmaker(self.__engine, expire_on_commit=False)
+        my_session = sessionmaker(bind=self.__engine, expire_on_commit=False)
 
         # crea un objeto de secion
         self.__session = scoped_session(my_session)

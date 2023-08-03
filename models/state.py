@@ -10,7 +10,7 @@ class State(BaseModel):
     __tablename__ = 'states'
     name = Column(String(128), nullable=False)
     # class attribute for DBStorage
-    cities = relationship("City", back_populates="State")
+    cities = relationship("City", cascade="all, delete", backref="State")
 
     @property
     def cities(self):
@@ -20,7 +20,7 @@ class State(BaseModel):
         from models.city import City    # import here to avoid circular import
         from models import storage
         cities_list = []
-        for city in City.instances.values():
+        for city in models.storage.all(City):
             if city.state_id == self.id:
                 cities_list.append(city)
         return cities_list
