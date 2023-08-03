@@ -2,16 +2,8 @@
 """comment"""
 from models.base_model import BaseModel, Base
 from sqlalchemy import create_engine
-import sqlalchemy
-import os
-import json
-from models.user import User
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
 from sqlalchemy.orm import sessionmaker, scoped_session
+import os
 
 
 class DBStorage:
@@ -57,3 +49,11 @@ class DBStorage:
         """*create all tables in the database
         *reate the current database session"""
         Base.metadata.create_all(self.__engine)
+
+        # crea una funcion de fabrica de sisiones
+        my_session = sessionmaker(self.__engine, expire_on_commit=False)
+
+        # crea un objeto de secion
+        Session = scoped_session(my_session)
+
+        my_session.close()
