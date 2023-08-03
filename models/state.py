@@ -2,8 +2,8 @@
 """ State Module for HBNB project """
 from models.base_model import BaseModel
 from sqlalchemy import Column, String
-from models.city import City
-from models.user import User
+from sqlalchemy.orm import relationship
+from models import storage
 
 
 class State(BaseModel):
@@ -15,5 +15,12 @@ class State(BaseModel):
 
     @property
     def cities(self):
-        """Getter for FileStorage"""
-        pass
+        """Getter for FileStorage
+        Returns a list of City instances with state_id = current State.id
+        """
+        from models.city import City    # import here to avoid circular import
+        new_list = []
+        for city in City.instances.values():
+            if city.state_id == self.id:
+                new_list.append(city)
+        return new_list
