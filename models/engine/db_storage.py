@@ -12,21 +12,16 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-        """create engine"""
-
-        # para obtener valores de las variables
+        """Constructor. Set up the DB connection"""
         user = os.environ.get('HBNB_MYSQL_USER')
-        password = os.environ.get('HBNB_MYSQL_PWD')
+        pwd = os.environ.get('HBNB_MYSQL_PWD')
         host = os.environ.get('HBNB_MYSQL_HOST')
-        database = os.environ.get('HBNB_MYSQL_DB')
-
+        db = os.environ.get('HBNB_MYSQL_DB')
         self.__engine = create_engine(
-            'mysql+mysqldb://{}:{}@localhost:3306/{}'.format(user, password, host, database), pool_pre_ping=True)
-        Base.metadata.create_all(self.__engine)
-
-        # tables if the environment variable HBNB_ENV is equal to test
-        if os.environ.get('HBNB_ENV') is 'test':
-            Base.metadata.drop_all(self.__engine)
+            f'mysql+mysqldb://{user}:{pwd}@{host}/{db}',
+            pool_pre_ping=True)
+        if os.environ.get("HBNB_ENV") == "test":
+            Base.metadata.drop(self.__engine)
 
     def all(self, cls=None):
         """comment"""
@@ -38,7 +33,7 @@ class DBStorage:
 
     def save(self):
         """commit all changes of the current database session"""
-        self.__session.commit()
+        # self.__session.commit()
 
     def delete(self, obj=None):
         """delete from the current database session obj if not None"""
@@ -56,4 +51,4 @@ class DBStorage:
         # crea un objeto de secion
         Session = scoped_session(my_session)
 
-        my_session.close()
+        # my_session.close()

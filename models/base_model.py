@@ -5,19 +5,11 @@ import models
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, DateTime
-<<<<<<< HEAD
 
 Base = declarative_base()
-=======
->>>>>>> origin/emily
-
 
 class BaseModel:
     """A base class for all hbnb models"""
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/emily
     id = Column(String(60), nullable=False, primary_key=True)
     created_at = Column(DateTime, nullable=False, default=(datetime.utcnow()))
     updated_at = Column(DateTime, nullable=False, default=(datetime.utcnow()))
@@ -61,10 +53,5 @@ class BaseModel:
         return dictionary
 
     def delete(self):
-<<<<<<< HEAD
-        """Delete an specific object in Filestorage"""
-        del self.__objects
-=======
         """to delete the current instance from the storage"""
         models.storage.delete(self)
->>>>>>> origin/emily
