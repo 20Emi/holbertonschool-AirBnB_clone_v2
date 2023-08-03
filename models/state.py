@@ -19,8 +19,8 @@ class State(BaseModel):
         """
         from models.city import City    # import here to avoid circular import
         from models import storage
-        new_list = []
+        cities_list = []
         for city in City.instances.values():
             if city.state_id == self.id:
-                new_list.append(city)
-        return new_list
+                cities_list.append(city)
+        return cities_list
