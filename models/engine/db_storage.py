@@ -30,27 +30,29 @@ class DBStorage:
             Base.metadata.drop(self.__engine)
 
     def all(self, cls=None):
-        """query on the current database session 
-        and get all objects stored in the database for a specific
+        """Query on the current database session,
+        get all objects stored in the database for a specific
         class or for all classes"""
 
         directory = {}
-        classes = [State]
+        classes = [State, City]
 
         if cls is None:
             for cls in classes:
-                objetcs = self.__session.query(cls).all()
-                for obj in objetcs:
+                objects = self.__session.query(cls).all()
+                for obj in objects:
                     key = f'{obj.__class__.__name__}.{obj.id}'
                     directory[key] = obj
             return directory
         elif cls in classes:
-            # se consulta solo para la clase especificada
-            objetcs = self.__session.query(cls).all()
-            for obj in objetcs:
+            objects = self.__session.query(cls).all()
+            for obj in objects:
                 key = f'{obj.__class__.__name__}.{obj.id}'
-            directory[key] = obj
-        return directory
+                directory[key] = obj
+            return directory
+        else:
+            print("** class doesn't exist **")
+            return {}
 
     def new(self, obj):
         """add the object to the current database session"""
