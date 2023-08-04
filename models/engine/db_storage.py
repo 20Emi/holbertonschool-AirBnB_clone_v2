@@ -35,19 +35,20 @@ class DBStorage:
         class or for all classes"""
 
         directory = {}
-        clas = ['State']
+        classes = [State]
 
         if cls is None:
-            for cls in clas:
-                for instance in self.__session.query(cls):
-                    keys = '{}.{}'.format(cls, instance.id)
-                    directory[keys] = instance
+            for cls in classes:
+                objetcs = self.__session.query(cls).all()
+                for obj in objetcs:
+                    key = f'{obj.__class__.__name__}.{obj.id}'
+                    directory[key] = obj
             return directory
-        else:
+        elif cls in classes:
             # se consulta solo para la clase especificada
-            directory[cls.__name__] = self.__session.query(cls)
-        for obj in directory[cls.__name__]:
-            key = '{}.{}'.format(type(obj).__name__, obj.id)
+            objetcs = self.__session.query(cls).all()
+            for obj in objetcs:
+                key = f'{obj.__class__.__name__}.{obj.id}'
             directory[key] = obj
         return directory
 
