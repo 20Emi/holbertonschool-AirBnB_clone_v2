@@ -11,6 +11,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from os import getenv
 
+
 class DBStorage:
     """"""
     __engine = None
@@ -34,7 +35,7 @@ class DBStorage:
         class or for all classes"""
 
         directory = {}
-        classes = [State, City]
+        classes = [State, City, User]
 
         if cls is None:
             for cls in classes:
