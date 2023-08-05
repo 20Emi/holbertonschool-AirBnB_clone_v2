@@ -35,7 +35,7 @@ class DBStorage:
         class or for all classes"""
 
         directory = {}
-        classes = [State, City, User, Place, Review]
+        classes = [State, City, User, Place, Review, Amenity]
 
         if cls is None:
             for cls in classes:
