@@ -45,7 +45,7 @@ class Place(BaseModel, Base):
     amenities = relationship(
         'Amenity', secondary='place_amenity', viewonly=False, backref="place_amenity")
 
-    # Gette task 10
+    # Getter task 10
     @property
     def amenities(self):
         """Getter for FileStorage
