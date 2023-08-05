@@ -31,42 +31,39 @@ class Place(BaseModel, Base):
     # for DBStorage
     reviews = relationship("Review", backref="place",
                            cascade="all, delete-orphan")
+    amenities = relationship(
+        'Amenity', secondary='place_amenity', viewonly=False)
+
+
     # for FileStorage
 
     @property
     def reviews(self):
-        """Getter for FileStorage
-        """
-        # imports here to avoid circular import
-        from models.place import Place
+        """ Getter for reviews in FileStorage """
+        # import here to avoid circular import
+        from models.place import Review
         from models import storage
         reviews_list = []
-        for review in storage.all(Place).values():
-            if Place.state_id == self.id:
-                reviews_list.append(Place)
+        for review in storage.all(Review).values():
+            if review.place_id == self.id:
+                reviews_list.append(Review)
         return reviews_list
 
-    # for DBStorage task 10
-    amenities = relationship(
-        'Amenity', secondary='place_amenity', viewonly=False)
-
-    # Getter task 10
     @property
     def amenities(self):
-        """Getter for FileStorage
-        """
+        """Getter for amenity in FileStorage """
         # import here to avoid circular import
         from models.amenity import Amenity
         from models import storage
         amenities_list = []
-        for amenities in storage.all(Amenity).values():
-            if amenities.id == self.amenity_ids:
-                amenities_list.append(amenities)
+        for amenity in storage.all(Amenity).values():
+            if amenity.place_id == self.id:
+                amenities_list.append(amenity)
         return amenities_list
 
-    # Setter task 10
     @amenities.setter
-    def amenities(self, amenity):
+    def amenities(self, obj):
+        """Setter for amenity in FileStorage """
         from models.amenity import Amenity
-        if isinstance(amenity, Amenity):
-            self.amenity_ids.append(amenity.id)
+        if type(obj) is Amenity:
+            self.amenity_ids.append(obj.id)

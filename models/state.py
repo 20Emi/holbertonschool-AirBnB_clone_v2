@@ -14,9 +14,7 @@ class State(BaseModel, Base):
 
     @property
     def cities(self):
-        """Getter for FileStorage
-        Returns a list of City instances with state_id = current State.id
-        """
+        """Getter for FileStorage """
         from models.city import City    # import here to avoid circular import
         from models import storage
         cities_list = []
