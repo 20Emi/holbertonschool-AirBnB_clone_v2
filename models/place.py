@@ -48,8 +48,7 @@ class Place(BaseModel, Base):
 
     # for DBStorage task 10
     amenities = relationship(
-        'Amenity', secondary='place_amenity', viewonly=False,
-        backref="place_amenity")
+        'Amenity', secondary='place_amenity', viewonly=False)
 
     # Getter task 10
     @property
