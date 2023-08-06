@@ -47,7 +47,7 @@ class Place(BaseModel, Base):
             reviews_list = []
             for review in storage.all(Review).values():
                 if review.place_id == self.id:
-                    reviews_list.append(Review)
+                    reviews_list.append(review)
             return reviews_list
 
         @property
@@ -58,7 +58,7 @@ class Place(BaseModel, Base):
             from models import storage
             amenities_list = []
             for amenity in storage.all(Amenity).values():
-                if amenity.id == self.amenity_ids:
+                if amenity.id in self.amenity_ids:
                     amenities_list.append(amenity)
             return amenities_list
 
@@ -66,5 +66,5 @@ class Place(BaseModel, Base):
         def amenities(self, obj):
             """Setter for amenity in FileStorage """
             from models.amenity import Amenity
-            if type(obj) is Amenity:
+            if type(obj) is Amenity and obj.id not in self.amenity_ids:
                 self.amenity_ids.append(obj.id)
