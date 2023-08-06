@@ -101,12 +101,14 @@ class test_fileStorage(unittest.TestCase):
         self.assertEqual(type(storage.all()), dict)
 
     def test_key_format(self):
-        """ Key is properly formatted """
+        """Test that the key is properly formatted"""
         new = BaseModel()
         _id = new.to_dict()['id']
         temp = None
         for key in storage.all().keys():
-            temp = key
+            if key.endswith('.' + _id):  # Check if the key ends with '.' + _id
+                temp = key
+                break  # Exit the loop after finding the correct key
         self.assertEqual(temp, 'BaseModel' + '.' + _id)
 
     def test_storage_var_created(self):

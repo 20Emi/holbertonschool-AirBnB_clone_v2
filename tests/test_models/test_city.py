@@ -14,11 +14,15 @@ class test_City(test_basemodel):
         self.value = City
 
     def test_state_id(self):
-        """ """
-        new = self.value()
+        """Test that the state_id attribute is set correctly"""
+        state_id_value = "state123"
+        new = self.value(state_id=state_id_value)
         self.assertEqual(type(new.state_id), str)
+        self.assertEqual(new.state_id, state_id_value)
 
     def test_name(self):
-        """ """
-        new = self.value()
+        """Test that the name attribute is set correctly"""
+        name_value = "New York"
+        new = self.value(name=name_value)  # Pass the name attribute
         self.assertEqual(type(new.name), str)
+        self.assertEqual(new.name, name_value)

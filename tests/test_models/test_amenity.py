@@ -14,6 +14,8 @@ class test_Amenity(test_basemodel):
         self.value = Amenity
 
     def test_name2(self):
-        """ """
-        new = self.value()
+        """Test that the name attribute is set correctly"""
+        name_value = "Place Name"
+        new = self.value(name=name_value)
         self.assertEqual(type(new.name), str)
+        self.assertEqual(new.name, name_value)
