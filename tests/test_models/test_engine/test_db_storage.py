@@ -1,51 +1,64 @@
 #!/usr/bin/python3
-""" Module for testing db storage"""
+"""unnitest of db_storage"""
+import models
+from models.base_model import Base
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
+from models.engine.db_storage import DBStorage
+from models.engine.file_storage import FileStorage
 import unittest
-import os
-import subprocess
 import MySQLdb
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.session import Session
+from sqlalchemy.engine.base import Engine
+from models import storage
 
 
-class test_dbStorage(unittest.TestCase):
-    """ Class to test the db storage method """
-
-    @classmethod
-    def setUpClass(cls):
-        # Set up the database connection for testing
-        cls.db = MySQLdb.connect(
-            host='localhost',
-            user='hbnb_dev',
-            passwd='hbnb_dev_pwd',
-            db='hbnb_dev_db'
-        )
-        cls.cursor = cls.db.cursor()
+class test_DB_Storage(unittest.TestCase):
+    """tests"""
 
     @classmethod
-    def tearDownClass(cls):
-        # Close the database connection
-        cls.db.close()
+    def up(self):
+        """se esta configurando de la base de datos de prueba
+        y la sesion"""
+        if isinstance(models.storage, DBStorage):
+            Base.metadata.create_all(self.storage.__DBStorage__engine)
+            Session = sessionmaker(self.storage.__DBStorage__engine)
+            self.storage._DBStorage__session = self.Session()
+            self.amenity = Amenity(name='EC')
+            self.storage._DBStorage__session.add(self.amenity)
 
-    def setUp(self):
-        # Clean up the database before each test
-        # self.cursor.execute("DELETE FROM cities")
-        # self.cursor.execute("DELETE FROM states")
-        self.db.commit()
+            self.city = City(name='EC', state_id=self.state.id)
+            self.storage._DBStorage__session.add(self.city)
 
-    def test_create_state(self):
-        # Test creating a new state in the database
-        cmd = (
-            'echo \'create State name="Utah"\' | HBNB_MYSQL_USER=hbnb_dev '
-            'HBNB_MYSQL_PWD=hbnb_dev_pwd HBNB_MYSQL_HOST=localhost '
-            'HBNB_MYSQL_DB=hbnb_dev_db HBNB_TYPE_STORAGE=db ./console.py'
-        )
-        subprocess.run(cmd, shell=True)
+            self.place = Place(
+                name='EC', city_id=self.city.id, user_id=self.user.id)
+            self.storage._DBStorage__session.add(self.place)
 
-        self.cursor.execute("SELECT * FROM states")
-        states = self.cursor.fetchall()
-        self.assertEqual(len(states), 1)
-        state_data = states[0]
-        self.assertEqual(state_data[2], 'Utah')
+            self.review = Review(
+                text='hola mundo', place_id=self.place.id, user_id=self.user.id)
+            self.storage._DBStorage__session.add(self.review)
 
+            self.user = User(email='ec@gmail.com', password='root')
+            self.storage._DBStorage__session.add(self.user)
 
-if __name__ == '__main__':
-    unittest.main()
+            self.state = State(name='EC')
+            self.storage._DBStorage__session.add(self.state)
+
+    def down(self):
+        self.storage._DBStorage__session.close()
+
+    def test_new(self):
+        user = User()
+        self.storage.new(user)
+        self.assertIn(user, self.storage._DBStorage__session.new)
+
+    def test_save(self):
+        user = User()
+        self.storage.new(user)
+        self.storage.save()
+        self.assertIn(user, self.storage._DBStorage__session)
