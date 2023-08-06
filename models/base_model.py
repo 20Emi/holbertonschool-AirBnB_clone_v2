@@ -24,7 +24,10 @@ class BaseModel:
             if key == "created_at" or key == "updated_at":
                 value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
             if key != "__class__":
-                self.__dict__[key] = value
+                if hasattr(self, key):
+                    setattr(self, key, value)
+                else:
+                    raise KeyError(f"Invalid attribute: {key}")
 
     def __str__(self):
         """Returns a string representation of the instance"""

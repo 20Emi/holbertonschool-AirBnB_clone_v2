@@ -21,7 +21,7 @@ class test_fileStorage(unittest.TestCase):
         """ Remove storage file at end of tests """
         try:
             os.remove('file.json')
-        except:
+        except Exception:
             pass
 
     def test_obj_list_empty(self):
@@ -31,9 +31,11 @@ class test_fileStorage(unittest.TestCase):
     def test_new(self):
         """ New object is correctly added to __objects """
         new = BaseModel()
-        for obj in storage.all().values():
-            temp = obj
-        self.assertTrue(temp is obj)
+        temp = None
+        if any(storage.all().values()):
+            for obj in storage.all().values():
+                temp = obj
+        self.assertTrue(temp is new)
 
     def test_all(self):
         """ __objects is properly returned """
@@ -63,10 +65,14 @@ class test_fileStorage(unittest.TestCase):
     def test_reload(self):
         """ Storage file is successfully loaded to __objects """
         new = BaseModel()
-        storage.save()
+        storage.save()  # Explicitly save the object to the file
         storage.reload()
-        for obj in storage.all().values():
-            loaded = obj
+        loaded = None
+        if any(storage.all().values()):  # Check if there are objects loaded
+            for obj in storage.all().values():
+                loaded = obj
+                break  # Exit the loop after the first iteration
+        self.assertIsNotNone(loaded)  # Check if an object was loaded
         self.assertEqual(new.to_dict()['id'], loaded.to_dict()['id'])
 
     def test_reload_empty(self):
@@ -98,6 +104,7 @@ class test_fileStorage(unittest.TestCase):
         """ Key is properly formatted """
         new = BaseModel()
         _id = new.to_dict()['id']
+        temp = None
         for key in storage.all().keys():
             temp = key
         self.assertEqual(temp, 'BaseModel' + '.' + _id)
