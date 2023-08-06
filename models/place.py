@@ -3,6 +3,7 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
+from os import getenv
 
 place_amenity = Table('place_amenity', Base.metadata,
                       Column('place_id', String(60),
@@ -29,40 +30,41 @@ class Place(BaseModel, Base):
     amenity_ids = []
 
     # for DBStorage
-    reviews = relationship("Review", backref="place",
-                           cascade="all, delete-orphan")
-    amenities = relationship(
-        'Amenity', secondary='place_amenity', viewonly=False)
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        reviews = relationship(
+            "Review", backref="place", cascade="all, delete-orphan")
+        amenities = relationship(
+            'Amenity', secondary='place_amenity', viewonly=False)
 
     # for FileStorage
+    else:
+        @property
+        def reviews(self):
+            """ Getter for reviews in FileStorage """
+            # import here to avoid circular import
+            from models.place import Review
+            from models import storage
+            reviews_list = []
+            for review in storage.all(Review).values():
+                if review.place_id == self.id:
+                    reviews_list.append(Review)
+            return reviews_list
 
-    @property
-    def reviews(self):
-        """ Getter for reviews in FileStorage """
-        # import here to avoid circular import
-        from models.place import Review
-        from models import storage
-        reviews_list = []
-        for review in storage.all(Review).values():
-            if review.place_id == self.id:
-                reviews_list.append(Review)
-        return reviews_list
+        @property
+        def amenities(self):
+            """Getter for amenity in FileStorage """
+            # import here to avoid circular import
+            from models.amenity import Amenity
+            from models import storage
+            amenities_list = []
+            for amenity in storage.all(Amenity).values():
+                if amenity.id == self.amenity_ids:
+                    amenities_list.append(amenity)
+            return amenities_list
 
-    @property
-    def amenities(self):
-        """Getter for amenity in FileStorage """
-        # import here to avoid circular import
-        from models.amenity import Amenity
-        from models import storage
-        amenities_list = []
-        for amenity in storage.all(Amenity).values():
-            if amenity.id == self.amenity_ids:
-                amenities_list.append(amenity)
-        return amenities_list
-
-    @amenities.setter
-    def amenities(self, obj):
-        """Setter for amenity in FileStorage """
-        from models.amenity import Amenity
-        if type(obj) is Amenity:
-            self.amenity_ids.append(obj.id)
+        @amenities.setter
+        def amenities(self, obj):
+            """Setter for amenity in FileStorage """
+            from models.amenity import Amenity
+            if type(obj) is Amenity:
+                self.amenity_ids.append(obj.id)
