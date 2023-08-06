@@ -29,20 +29,20 @@ class Place(BaseModel, Base):
     longitude = Column(Float, nullable=True)
     amenity_ids = []
 
-    # for DBStorage
+# for DBStorage
     if getenv('HBNB_TYPE_STORAGE') == 'db':
         reviews = relationship(
-            "Review", backref="place", cascade="all, delete-orphan")
+            "Review", backref="place", cascade="all, delete")
         amenities = relationship(
             'Amenity', secondary=place_amenity, viewonly=False)
 
-    # for FileStorage
+# for FileStorage
     else:
         @property
         def reviews(self):
             """ Getter for reviews in FileStorage """
             # import here to avoid circular import
-            from models.place import Review
+            from models.review import Review
             from models import storage
             reviews_list = []
             for review in storage.all(Review).values():
