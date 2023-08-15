@@ -50,9 +50,6 @@ class DBStorage:
                 key = f'{obj.__class__.__name__}.{obj.id}'
                 directory[key] = obj
             return directory
-        else:
-            print("** class doesn't exist **")
-            return {}
 
     def new(self, obj):
         """add the object to the current database session"""
