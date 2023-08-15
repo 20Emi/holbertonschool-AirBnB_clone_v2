@@ -34,7 +34,8 @@ def rot3(text="is cool"):
 
 @app.route('/number/<n>', strict_slashes=False)
 def rot4(n):
-    return f'{n} is a number'
+    if isinstance(n, int):
+        return f'{n} is a number'
 
 
 if __name__ == '__main__':
