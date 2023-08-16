@@ -8,13 +8,14 @@ app = Flask(__name__)
 
 
 @app.teardown_appcontext
-def rot7():
+def rot7(excepetion):
     storage.close()
 
 
 @app.route('/states_list', strict_slashes=False)
 def lista():
-    return render_template('7-states_list.html', states=storage.all(State).values())
+    state = storage.all(State).values()
+    return render_template('7-states_list.html', state=state)
 
 
 if __name__ == '__main__':
