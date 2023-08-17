@@ -14,8 +14,8 @@ def teardown(excepetion):
 
 @app.route('/cities_by_states', strict_slashes=False)
 def lista():
-    state = storage.all(State).values()
-    return render_template('8-cities_by_states.html', state=state)
+    state = storage.all(State)
+    return render_template('8-cities_by_states.html', states=state)
 
 
 if __name__ == '__main__':
