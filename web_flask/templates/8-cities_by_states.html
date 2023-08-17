@@ -13,6 +13,7 @@
             <ul>
                 {% for city in state.cities | sort(attribute='name') %}
                 <li>City: {{ city.id }}: <b>{{city.name }}</b></li>
+                {% endfor %}
             </ul>
         </LI>
         {% endfor %}
