@@ -21,8 +21,13 @@ def states():
 @app.route('/states/<id>', strict_slashes=False)
 def state_id(id):
     # busca un objeto específico en el almacenamiento (id)
-    state = storage.all(State).get('state.{}'.format(id))
-    return render_template('9-states.html', state=state)
+    states = storage.all(State).values()
+    aux = "not"
+    for state in states:
+        if state.id == id:
+            aux = id
+            break
+    return render_template('9-states.html', aux=aux, states=state)
 
 
 if __name__ == '__main__':
