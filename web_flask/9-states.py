@@ -13,10 +13,16 @@ def teardown(excepetion):
 
 
 @app.route('/states', strict_slashes=False)
+def states():
+    state = storage.all(State).values()
+    return render_template('7-states_list.html', state=state)
+
+
 @app.route('/states/<id>', strict_slashes=False)
-def lista():
-    state = storage.all(State)
-    return render_template('9-states.html', states=state)
+def state_id(id):
+    # busca un objeto específico en el almacenamiento (id)
+    state = storage.all(State).get('state.{}'.format(id))
+    return render_template('9-states.html', state=state)
 
 
 if __name__ == '__main__':
